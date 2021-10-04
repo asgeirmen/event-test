@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EventTest": {
+      "commandName": "Project",
+      "commandLineArgs": "consume"
+    }
+  }
+}
