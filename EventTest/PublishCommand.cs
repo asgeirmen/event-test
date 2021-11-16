@@ -37,7 +37,7 @@ namespace EventTest
 
                     x.AddRider(rider =>
                     {
-                        rider.AddProducer<ValueEntered>("quickstart-events");
+                        rider.AddProducer<ValueEntered>("EventTest.ValueEntered");
 
                         rider.UsingKafka((context, k) => { k.Host("localhost:9092"); });
                     });

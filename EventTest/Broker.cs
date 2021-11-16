@@ -14,12 +14,12 @@ namespace EventTest
 
         public abstract Task Publish<T>(T message);
 
-        public void AddConsumer(string consumerGroupName, Type type)
+        public void AddConsumer(string consumerGroupName, Type  consumerType)
         {
             _consumers.Add(new ConsumerConfig()
             {
                 GroupName = consumerGroupName,
-                Type = type
+                Type = consumerType
             });
         }
 

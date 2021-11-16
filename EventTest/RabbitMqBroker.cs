@@ -9,6 +9,7 @@ using MassTransit;
 using MassTransit.RabbitMqTransport;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using MassTransit.ConsumeConfigurators;
 
 namespace EventTest
 {
@@ -56,11 +57,11 @@ namespace EventTest
             var provider = services.BuildServiceProvider();
             _busControl = provider.GetRequiredService<IBusControl>();
 
-            var consumerMethod = typeof(ConsumerExtensions).GetMethods().FirstOrDefault(m => m.Name == "Consumer" && m.IsGenericMethod);
+            var consumerMethod = typeof(ConsumerExtensions).GetMethods().FirstOrDefault(m => m.Name == "Consumer" && m.IsGenericMethod && m.GetParameters().Length == 2);
             foreach (var consumer in _consumers)
             {
                 MethodInfo consumerGenericMethod = consumerMethod.MakeGenericMethod(consumer.Type);
-                _busControl.ConnectReceiveEndpoint(consumer.GroupName, e => consumerGenericMethod.Invoke(e, new object[] {null}) );
+                _busControl.ConnectReceiveEndpoint(consumer.GroupName, e => consumerGenericMethod.Invoke(null, new object[] {e, null}) );
 
             }
 
