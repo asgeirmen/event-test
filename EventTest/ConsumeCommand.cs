@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using Confluent.Kafka;
+using EventTest.Bus.Config;
 using EventTest.EventBus;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -15,11 +16,8 @@ namespace EventTest
     [Verb("consume", HelpText = "Save a code change")]
     public class ConsumeCommand : ICommand
     {
-        [Option('n', "name", Required = false, Default = "default", HelpText = "Name of the consumer, that will be appended to a queue name starting with 'event-listener-' ")]
-        public string Name { get; set; }
-
-        [Option('b', "broker", Required = false, Default = "kafka", HelpText = "The type of broker to use: rabbitmq or kafka")]
-        public string BrokerType { get; set; }
+        [Option('g', "group", Required = false, Default = "default", HelpText = "Name of the consumer group ")]
+        public string ConsumerGroup { get; set; }
 
         public  Task Register(IServiceCollection services, IConfiguration config)
         {
@@ -28,7 +26,7 @@ namespace EventTest
                 {
                     new ConsumerConfig<ValueEntered, ValueEnteredEventConsumer>()
                     {
-                        GroupName = "event-listener-" + Name
+                        ConsumerGroup =  ConsumerGroup
                     }
                 }, 
                 null);

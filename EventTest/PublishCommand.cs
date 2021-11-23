@@ -10,6 +10,7 @@ using MassTransit.Monitoring.Performance;
 using MassTransit.KafkaIntegration;
 using Confluent.Kafka;
 using EventTest.Bus;
+using EventTest.Bus.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using EventTest.EventBus;
@@ -21,9 +22,6 @@ namespace EventTest
     {
         [Option('c', "count", Required = false, Default = 0, HelpText = "Number of messages generated and published")]
         public int Count { get; set; }
-
-        [Option('b', "broker", Required = false, Default = "kafka", HelpText = "The type of broker to use: rabbitmq or kafka")]
-        public string BrokerType { get; set; }
 
         public Task Register(IServiceCollection services, IConfiguration config)
         {
@@ -42,7 +40,7 @@ namespace EventTest
             {
                 for (int ind = 0; ind < Count; ind++)
                 {
-                    string messageValue = "Message " + ind;// + ": " + new string('*', 10000);
+                    string messageValue = "Message " + ind + ": " + new string('*', 300);
                     var stopwatch = Stopwatch.StartNew();
 
                     await publisher.Publish(new ValueEntered()
@@ -50,7 +48,7 @@ namespace EventTest
                         Value = messageValue
                     });
 
-                    Console.WriteLine($"Publish took {stopwatch.ElapsedMilliseconds} ms: " + "Message " + ind + " + 10000 more");
+                    Console.WriteLine($"Publish took {stopwatch.ElapsedMilliseconds} ms: " + "Message " + ind + " + 300 more");
                 }
             }
             else
@@ -67,7 +65,7 @@ namespace EventTest
                     if ("quit".Equals(messageValue, StringComparison.OrdinalIgnoreCase))
                         break;
 
-                    await publisher.Publish(new
+                    await publisher.Publish(new ValueEntered()
                     {
                         Value = messageValue
                     });

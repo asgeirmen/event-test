@@ -14,8 +14,7 @@ namespace EventTest.EventBus
 
     public class ConsumerConfig<TMessage,TConsumer> : ConsumerConfig where TMessage : class where TConsumer : IConsumer<TMessage>
     {
-        public string TopicName;
-        public string GroupName;
+        public string ConsumerGroup;
 
         public Type ConsumerType => typeof(TConsumer);
 

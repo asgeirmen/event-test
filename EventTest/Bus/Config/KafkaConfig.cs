@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EventTest.EventBus
+namespace EventTest.Bus.Config
 {
     public class KafkaConfig
     {

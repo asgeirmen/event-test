@@ -8,6 +8,5 @@ namespace EventTest.Bus
     public interface IBusPublisher<T> where T : class
     {
         Task Publish(T message);
-        Task Publish(object message);
     }
 }

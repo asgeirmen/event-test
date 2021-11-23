@@ -19,9 +19,5 @@ namespace EventTest.Bus
         {
             return _producer.Produce(message);
         }
-        public Task Publish(object message)
-        {
-            return _producer.Produce(message);
-        }
     }
 }

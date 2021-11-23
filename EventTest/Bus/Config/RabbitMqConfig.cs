@@ -4,11 +4,12 @@ using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace EventTest.EventBus
+namespace EventTest.Bus.Config
 {
     public class RabbitMqConfig
     {
-        public string Address { get; set; }
+        public string Host { get; set; }
+        public int? Port { get; set; }
         public string VirtualHost { get; set; }
         public BusTransports Transport { get; set; }
         public string Username { get; set; }
@@ -23,12 +24,6 @@ namespace EventTest.EventBus
         public StoreLocation StoreLocation { get; set; }
         public X509FindType FindType { get; set; }
         public CertificateProvider CertificateProvider { get; set; }
-    }
-
-    public enum BusTransports
-    {
-        InMemory,
-        RabbitMq
     }
 
     public enum CertificateProvider

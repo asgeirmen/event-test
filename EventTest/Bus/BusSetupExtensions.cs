@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Confluent.Kafka;
 using EventTest.Bus;
+using EventTest.Bus.Config;
 using MassTransit;
 using MassTransit.KafkaIntegration;
 using Microsoft.Extensions.Configuration;
@@ -19,8 +20,13 @@ namespace EventTest.EventBus
         public static IServiceCollection ConfigureEventBus(this IServiceCollection services,
             BusConfig busConfig, ILogger logger, IList<ConsumerConfig> consumers, IList<Type> publisherTypes)
         {
-            if (busConfig.Kafka != null)
+            if (busConfig.Transport == BusTransports.Kafka)
             {
+                if (busConfig.Kafka == null)
+                {
+                    throw new Exception("Kafka config is missing");
+                }
+
                 services.AddMassTransit(x =>
                 {
                     x.UsingRabbitMq((context, cfg) => cfg.ConfigureEndpoints(context));
@@ -50,6 +56,7 @@ namespace EventTest.EventBus
                                 var method = rider.GetType().GetMethods()
                                     .FirstOrDefault(m => m.Name == "AddConsumer" && m.IsGenericMethod);
                                 MethodInfo generic = method.MakeGenericMethod(consumerType);
+                                rider.AddConsumer(consumerType);
                                 generic.Invoke(rider, new object[] {null});
                             }
                         }
@@ -121,19 +128,67 @@ namespace EventTest.EventBus
                                     };
 
                                     generic.Invoke(null,
-                                        new object[] {k, eventType.FullName, ((dynamic) consumer).GroupName, action});
+                                        new object[] {k, eventType.FullName, ((dynamic) consumer).ConsumerGroup, action});
                                 }
                             }
                         });
                     });
                 });
             }
-            else 
+            else if (busConfig.Transport == BusTransports.RabbitMq)
             {
-                
-            }
+                if (busConfig.RabbitMq == null)
+                {
+                    throw new Exception("RabbitMq config is missing");
+                }
 
-            //services.AddSingleton<IHostedService, MassTransitBusHostingService>();
+                services.AddMassTransit(x =>
+                {
+                    if (consumers != null)
+                    {
+                        foreach (var consumer in consumers)
+                        {
+                            var consumerType = ((dynamic)consumer).ConsumerType;
+                            var consumerConfig = (Type)((dynamic)consumer).Config;
+                            var method = x.GetType().GetMethods()
+                                .FirstOrDefault(m => m.Name == "AddConsumer" && m.IsGenericMethod);
+                            MethodInfo generic = method.MakeGenericMethod(consumerType);
+                            generic.Invoke(x, new object[] { consumerConfig });
+                        }
+                    }
+
+                    x.UsingRabbitMq((context, cfg) =>
+                        {
+                            cfg.Host(busConfig.RabbitMq.Host ?? "localhost", (ushort)(busConfig.RabbitMq.Port ?? 5672), busConfig.RabbitMq.VirtualHost ?? "/", h =>
+                            {
+                                if (busConfig.RabbitMq.Username != null) h.Username(busConfig.RabbitMq.Username);
+                                if (busConfig.RabbitMq.Password != null) h.Password(busConfig.RabbitMq.Password);
+                            });
+
+                            if (consumers != null)
+                            {
+                                foreach (var consumer in consumers)
+                                {
+                                    var consumerType = (Type)((dynamic)consumer).ConsumerType;
+                                    var consumerGroupName = (string) ((dynamic) consumer).ConsumerGroup;
+                                    cfg.ReceiveEndpoint(consumerGroupName,
+                                        e => { e.ConfigureConsumer(context, consumerType); });
+                                }
+                            }
+                        }
+                    );
+                    if (publisherTypes != null)
+                    {
+                        foreach (var publisher in publisherTypes)
+                        {
+                            var publisherInterface = typeof(IBusPublisher<>).MakeGenericType(publisher);
+                            var publisherImpl = typeof(RabbitMqPublisher<>).MakeGenericType(publisher);
+                            services.AddTransient(publisherInterface, publisherImpl);
+                        }
+                    }
+                });
+
+            }
 
             return services;
         }
