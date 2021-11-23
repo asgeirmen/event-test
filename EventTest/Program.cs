@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CommandLine;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace EventTest
 {
@@ -12,6 +14,30 @@ namespace EventTest
 
         static async Task Main(string[] args)
         {
+            var parserResults = Parser.Default.ParseArguments<PublishCommand, ConsumeCommand>(args);
+
+            var host = new HostBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    IConfiguration config = new ConfigurationBuilder()
+                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                        .AddEnvironmentVariables()
+                        .AddCommandLine(args)
+                        .Build();
+
+                    parserResults.WithParsedAsync<ICommand>(t => t.Register(services, config));
+                })
+                .Build();
+
+            var busControl = host.Services.GetRequiredService<IBusControl>();
+            await busControl.StartAsync();
+
+            await parserResults.WithParsedAsync<ICommand>(t => t.Execute(host.Services));
+
+            await busControl.StopAsync();
+
+            //await host.RunAsync();
+
             //IConfiguration Configuration = new ConfigurationBuilder()
             //    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             //    .AddEnvironmentVariables()
@@ -23,8 +49,8 @@ namespace EventTest
             //scope.ServiceProvider.GetRequiredService<ConsoleApplication>().Run();
             //DisposeServices();
 
-            await Parser.Default.ParseArguments<PublishCommand, ConsumeCommand>(args)
-                .WithParsedAsync<ICommand>(t => t.Execute());
+            //await Parser.Default.ParseArguments<PublishCommand, ConsumeCommand>(args)
+            //    .WithParsedAsync<ICommand>(t => t.Execute());
         }
 
         private static void RegisterServices()

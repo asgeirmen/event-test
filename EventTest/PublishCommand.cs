@@ -9,7 +9,10 @@ using MassTransit;
 using MassTransit.Monitoring.Performance;
 using MassTransit.KafkaIntegration;
 using Confluent.Kafka;
+using EventTest.Bus;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using EventTest.EventBus;
 
 namespace EventTest
 {
@@ -19,117 +22,56 @@ namespace EventTest
         [Option('c', "count", Required = false, Default = 0, HelpText = "Number of messages generated and published")]
         public int Count { get; set; }
 
-        [Option('b', "broker", Required = false, Default = "rabbitmq", HelpText = "The type of broker to use: rabbitmq or kafka")]
+        [Option('b', "broker", Required = false, Default = "kafka", HelpText = "The type of broker to use: rabbitmq or kafka")]
         public string BrokerType { get; set; }
 
-        public async Task Execute()
+        public Task Register(IServiceCollection services, IConfiguration config)
         {
-            var services = new ServiceCollection();
-            IServiceProvider provider = null;
-            ITopicProducer<ValueEntered> producer = null;
 
-            IBusControl busControl;
-            if (BrokerType == "kafka")
+            var busConfig = config.GetSection("BusConfig").Get<BusConfig>();
+            services.ConfigureEventBus(busConfig, null, null, new [] {typeof(ValueEntered) });
+
+            return Task.CompletedTask;
+        }
+
+        public async Task Execute(IServiceProvider serviceProvider)
+        {
+            var publisher = serviceProvider.GetRequiredService<IBusPublisher<ValueEntered>>();
+
+            if (Count > 0)
             {
-                services.AddMassTransit(x =>
+                for (int ind = 0; ind < Count; ind++)
                 {
-                    x.UsingRabbitMq((context, cfg) => cfg.ConfigureEndpoints(context));
+                    string messageValue = "Message " + ind;// + ": " + new string('*', 10000);
+                    var stopwatch = Stopwatch.StartNew();
 
-                    x.AddRider(rider =>
+                    await publisher.Publish(new ValueEntered()
                     {
-                        rider.AddProducer<ValueEntered>("EventTest.ValueEntered");
-
-                        rider.UsingKafka((context, k) => { k.Host("localhost:9092"); });
+                        Value = messageValue
                     });
-                });
 
-                provider = services.BuildServiceProvider();
+                    Console.WriteLine($"Publish took {stopwatch.ElapsedMilliseconds} ms: " + "Message " + ind + " + 10000 more");
+                }
             }
             else
             {
-                services.AddMassTransit(x =>
+                while (true)
                 {
-                    x.UsingRabbitMq((context, cfg) => cfg.Host("localhost", "/", h =>
+                    string messageValue = await Task.Run(() =>
                     {
-                        h.Username("guest");
-                        h.Password("guest");
-                    }));
-                });
-                provider = services.BuildServiceProvider();
-            }
+                        Console.WriteLine("Enter message (or quit to exit)");
+                        Console.Write("> ");
+                        return Console.ReadLine();
+                    });
 
-            var source = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                    if ("quit".Equals(messageValue, StringComparison.OrdinalIgnoreCase))
+                        break;
 
-            busControl = provider.GetRequiredService<IBusControl>();
-            await busControl.StartAsync(source.Token);
-
-            if (BrokerType == "kafka")
-            {
-                producer = provider.GetRequiredService<ITopicProducer<ValueEntered>>();
-            }
-
-            try
-            {
-                if (Count > 0)
-                {
-                    for (int ind = 0; ind < Count; ind++)
+                    await publisher.Publish(new
                     {
-                        string messageValue = "Message " + ind + ": " + new string('*', 10000);
-                        var stopwatch = Stopwatch.StartNew();
-
-
-                        if (BrokerType == "kafka")
-                        {
-                            await producer.Produce(new
-                            {
-                                Value = messageValue
-                            });
-                        }
-                        else
-                        {
-                            await busControl.Publish<ValueEntered>(new
-                            {
-                                Value = messageValue
-                            });
-                        }
-
-                        Console.WriteLine($"Publish took {stopwatch.ElapsedMilliseconds} ms: " + "Message " + ind + " + 10000 more");
-                    }
+                        Value = messageValue
+                    });
                 }
-                else
-                {
-                    while (true)
-                    {
-                        string messageValue = await Task.Run(() =>
-                        {
-                            Console.WriteLine("Enter message (or quit to exit)");
-                            Console.Write("> ");
-                            return Console.ReadLine();
-                        });
-
-                        if ("quit".Equals(messageValue, StringComparison.OrdinalIgnoreCase))
-                            break;
-
-                        if (BrokerType == "kafka")
-                        {
-                            await producer.Produce(new
-                            {
-                                Value = messageValue
-                            });
-                        }
-                        else
-                        {
-                            await busControl.Publish<ValueEntered>(new
-                            {
-                                Value = messageValue
-                            });
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                await busControl.StopAsync();
             }
         }
     }

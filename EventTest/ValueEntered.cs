@@ -4,8 +4,8 @@ using System.Text;
 
 namespace EventTest
 {
-    public interface ValueEntered
+    public class ValueEntered
     {
-        string Value { get; }
+        public string Value { get; set; }
     }
 }

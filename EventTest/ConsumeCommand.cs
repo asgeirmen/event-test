@@ -5,7 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
 using Confluent.Kafka;
+using EventTest.EventBus;
 using MassTransit;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EventTest
@@ -16,43 +18,29 @@ namespace EventTest
         [Option('n', "name", Required = false, Default = "default", HelpText = "Name of the consumer, that will be appended to a queue name starting with 'event-listener-' ")]
         public string Name { get; set; }
 
-        [Option('b', "broker", Required = false, Default = "rabbitmq", HelpText = "The type of broker to use: rabbitmq or kafka")]
+        [Option('b', "broker", Required = false, Default = "kafka", HelpText = "The type of broker to use: rabbitmq or kafka")]
         public string BrokerType { get; set; }
 
-        public async Task Execute()
+        public  Task Register(IServiceCollection services, IConfiguration config)
         {
-            Broker broker;
+            var busConfig = config.GetSection("BusConfig").Get<BusConfig>();
+            services.ConfigureEventBus(busConfig, null, new[]
+                {
+                    new ConsumerConfig<ValueEntered, ValueEnteredEventConsumer>()
+                    {
+                        GroupName = "event-listener-" + Name
+                    }
+                }, 
+                null);
 
-            var services = new ServiceCollection();
-            if (BrokerType == "kafka")
-            {
-                broker = new KafkaBroker(services, "localhost", 0);
+            return Task.CompletedTask;
+        }
 
-            }
-            else
-            {
-                broker = new RabbitMqBroker(services, "localhost", 0, "/", "guest", "guest");
-            }
+        public async Task Execute(IServiceProvider serviceProvider)
+        {
+            Console.WriteLine("Press enter to exit");
 
-            broker.AddConsumer("event-listener-" + Name, typeof(ValueEnteredEventConsumer));
-
-
-
-            var source = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-
-            await broker.StartAsync(services);
-            //await busControl.StartAsync(source.Token);
-            try
-            {
-                Console.WriteLine("Press enter to exit");
-
-                await Task.Run(() => Console.ReadLine());
-            }
-            finally
-            {
-                await broker.StopAsync();
-                //await busControl.StopAsync();
-            }
+            await Task.Run(() => Console.ReadLine());
         }
     }
 }
