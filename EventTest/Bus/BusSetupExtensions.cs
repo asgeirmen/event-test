@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Confluent.Kafka;
-using EventTest.Bus;
 using EventTest.Bus.Config;
 using MassTransit;
 using MassTransit.KafkaIntegration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace EventTest.EventBus
+namespace EventTest.Bus
 {
     public static class BusSetupExtensions
     {
@@ -188,6 +184,10 @@ namespace EventTest.EventBus
                     }
                 });
 
+            }
+            else
+            {
+                throw new Exception("Transport not configured");
             }
 
             return services;

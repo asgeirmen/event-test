@@ -1,6 +1,4 @@
-﻿using EventTest.EventBus;
-
-namespace EventTest.Bus.Config
+﻿namespace EventTest.Bus.Config
 {
     public class BusConfig
     {

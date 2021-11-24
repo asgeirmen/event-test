@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
-using MassTransit.KafkaIntegration;
 
-namespace EventTest.EventBus
+namespace EventTest.Bus
 {
     public abstract class ConsumerConfig
     {

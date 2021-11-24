@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using CommandLine;
-using MassTransit;
-using MassTransit.Monitoring.Performance;
-using MassTransit.KafkaIntegration;
-using Confluent.Kafka;
 using EventTest.Bus;
 using EventTest.Bus.Config;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using EventTest.EventBus;
 
 namespace EventTest
 {

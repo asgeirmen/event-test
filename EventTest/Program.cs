@@ -27,12 +27,16 @@ namespace EventTest
                 })
                 .Build();
 
-            var busControl = host.Services.GetRequiredService<IBusControl>();
-            await busControl.StartAsync();
+            var busControl = host.Services.GetService<IBusControl>();
+            if (busControl != null)
+            {
+                await busControl.StartAsync();
 
-            await parserResults.WithParsedAsync<ICommand>(t => t.Execute(host.Services));
+                await parserResults.WithParsedAsync<ICommand>(t => t.Execute(host.Services));
 
-            await busControl.StopAsync();
+                await busControl.StopAsync();
+            }
+
         }
     }
 }
