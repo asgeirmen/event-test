@@ -1,0 +1,47 @@
+{
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Debug",
+      "Override": {
+        "Microsoft": "Information",
+        "System": "Information"
+      },
+      "Using": []
+    },
+    "WriteTo": [
+      {}
+    ]
+  },
+  "MassTransitConfiguration": {
+    //"KafkaConfiguration": {
+    //  "Host": {
+    //    "bootstrap.servers": "localhost:9092"
+    //  },
+    //  "Producers": [
+    //    {
+    //      "TransactionTimeout": 30000,
+    //      "Name": "unicredit.ods.meniga_to_kafka.transactions.Transaction",
+    //      "Topic": "test-topic"
+    //    }
+    //  ]
+    //},
+    "RabbitMqConfiguration": {
+      "Host": {
+        "HostName": "localhost",
+        "VirtualHost": "/",
+        "UserName": "guest",
+        "Password": "guest"
+      },
+      "Consumers": [
+        {
+          "Type": "Meniga.MassTransit.Runner.Consumers.EventConsumer",
+          "Definition": "Meniga.MassTransit.Runner.Consumers.EventConsumerDefinition"
+        },
+        {
+          "Type": "Meniga.MassTransit.Runner.Consumers.EventTwoConsumer",
+          "Definition": "Meniga.MassTransit.Runner.Consumers.EventTwoConsumerDefinition"
+        }
+      ]
+    }
+  }
+}

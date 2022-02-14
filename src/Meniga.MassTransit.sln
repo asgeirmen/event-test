@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Runner", "Meniga.MassTransit.Runner\Meniga.MassTransit.Runner.csproj", "{1FD9C5CA-8DE1-400B-A6B1-C3F476BC420D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Common", "Meniga.MassTransit.Common\Meniga.MassTransit.Common.csproj", "{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Kafka", "Meniga.MassTransit.Kafka\Meniga.MassTransit.Kafka.csproj", "{3F049931-F981-4BFE-94F5-AE64715B08A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.RabbitMq", "Meniga.MassTransit.RabbitMq\Meniga.MassTransit.RabbitMq.csproj", "{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1FD9C5CA-8DE1-400B-A6B1-C3F476BC420D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FD9C5CA-8DE1-400B-A6B1-C3F476BC420D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FD9C5CA-8DE1-400B-A6B1-C3F476BC420D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FD9C5CA-8DE1-400B-A6B1-C3F476BC420D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F049931-F981-4BFE-94F5-AE64715B08A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F049931-F981-4BFE-94F5-AE64715B08A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F049931-F981-4BFE-94F5-AE64715B08A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F049931-F981-4BFE-94F5-AE64715B08A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {81A7D12C-6584-4AAF-9BCA-96B62F58BF3B}
+	EndGlobalSection
+EndGlobal
