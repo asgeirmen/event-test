@@ -1,2 +1,2 @@
-docker exec -t messaging-kafka kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 3 --topic test_topic_1
-docker exec -t messaging-kafka kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 3 --topic test_topic_2
+docker exec -t messaging-kafka kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 3 --topic Meniga.MassTransit.Runner.EventOne
+docker exec -t messaging-kafka kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 3 --topic Meniga.MassTransit.Runner.EventTwo

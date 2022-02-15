@@ -14,16 +14,13 @@
   },
   "MassTransitConfiguration": {
     "KafkaConfiguration": {
-      "Host": {
-        "bootstrap.servers": "localhost:9092"
-      },
-      "Producers": [
-        {
-          "TransactionTimeout": 30000,
-          "Name": "unicredit.ods.meniga_to_kafka.transactions.Transaction",
-          "Topic": "test-topic"
-        }
-      ]
+      "Brokers": [
+        "localhost:9092"
+      ],
+      "Producers": {
+        "KafkaPublisher;EventOne": "eventOneConsumerGroup",
+        "KafkaPublisher;EventTwo": "eventTwoConsumerGroup"
+      }
     },
     //"RabbitMqConfiguration": {
     //  "HostName": "localhost",
@@ -31,9 +28,9 @@
     //  "UserName": "guest",
     //  "Password": "guest"
     //},
-    //"Consumers": {
-    //  "EventOneConsumer": "eventOneConsumerGroup",
-    //  "EventTwoConsumer": "eventTwoConsumerGroup"
-    //}
+    "Consumers": {
+      "EventOneConsumer": "eventOneConsumerGroup",
+      "EventTwoConsumer": "eventTwoConsumerGroup"
+    }
   }
 }

@@ -5,9 +5,8 @@ using System.Reflection;
 using MassTransit;
 using MassTransit.ExtensionsDependencyInjectionIntegration;
 using MassTransit.RabbitMqTransport;
-using Meniga.MassTransit.Common;
-using Meniga.MassTransit.Common.Bus;
 using Meniga.MassTransit.Common.Configuration.RabbitMq;
+using Meniga.MassTransit.Infrastructure.Consumer;
 
 namespace Meniga.MassTransit.Infrastructure.RabbitMq
 {

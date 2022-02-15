@@ -1,7 +1,7 @@
 ﻿using MassTransit;
-using Meniga.MassTransit.Common;
 using Meniga.MassTransit.Common.Bus;
 using Meniga.MassTransit.Common.Configuration;
+using Meniga.MassTransit.Infrastructure.Consumer;
 using Meniga.MassTransit.Infrastructure.Producer;
 using Meniga.MassTransit.Infrastructure.RabbitMq;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,21 +14,23 @@ namespace Meniga.MassTransit.RabbitMq
             MassTransitConfiguration configuration) {
 
             var provider = services.BuildServiceProvider();
-            var consumerRegistry = provider.GetRequiredService<IConsumersRegistry>();
+            var consumersRegistry = provider.GetRequiredService<IConsumersRegistry>();
             services.AddMassTransit(config =>
             {
                 if (configuration?.RabbitMqConfiguration != null)
                 {
-                    config.ConfigureMassTransitRabbitMqBus(configuration.RabbitMqConfiguration, consumerRegistry);
+                    config.ConfigureMassTransitRabbitMqBus(configuration.RabbitMqConfiguration, consumersRegistry);
+                    services.AddTransient(typeof(IBusPublisher<>), typeof(RabbitMqPublisher<>));
                 }
 
                 if (configuration?.KafkaConfiguration != null)
                 {
-                    config.ConfigureMassTransitKafkaRider(configuration.KafkaConfiguration, consumerRegistry);
+                    var producersRegistry = provider.GetRequiredService<IProducersRegistry>();
+                    config.UsingRabbitMq((context, cfg) => cfg.ConfigureEndpoints(context));
+                    config.ConfigureMassTransitKafkaRider(configuration.KafkaConfiguration, consumersRegistry, producersRegistry);
+                    services.RegisterKafkaProducers(producersRegistry.RegisteredProducers);
                 }
             });
-
-            services.AddTransient(typeof(IBusPublisher<>), typeof(MassTransitPublisher<>));
 
             services.AddMassTransitHostedService();
         }

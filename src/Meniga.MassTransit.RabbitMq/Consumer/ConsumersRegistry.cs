@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Meniga.MassTransit.Common.Bus;
 
-namespace Meniga.MassTransit.Common
+namespace Meniga.MassTransit.Infrastructure.Consumer
 {
     public class ConsumersRegistry : IConsumersRegistry
     {
@@ -12,15 +11,15 @@ namespace Meniga.MassTransit.Common
 
         public IList<ConsumerConfig> RegisteredConsumeres { get; }
 
-        public void Register(ConsumerConfig consumer)
+        public void Register(ConsumerConfig consumerConfig)
         {
-            RegisteredConsumeres.Add(consumer);
+            RegisteredConsumeres.Add(consumerConfig);
         }
     }
 
     public interface IConsumersRegistry
     {
         IList<ConsumerConfig> RegisteredConsumeres { get; }
-        void Register(ConsumerConfig consumer);
+        void Register(ConsumerConfig consumerConfig);
     }
 }

@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Runner",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Common", "Meniga.MassTransit.Common\Meniga.MassTransit.Common.csproj", "{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Kafka", "Meniga.MassTransit.Kafka\Meniga.MassTransit.Kafka.csproj", "{3F049931-F981-4BFE-94F5-AE64715B08A4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Infrastructure", "Meniga.MassTransit.RabbitMq\Meniga.MassTransit.Infrastructure.csproj", "{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29580C6B-B7BB-42C4-A3FB-FB20C0B15FF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3F049931-F981-4BFE-94F5-AE64715B08A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3F049931-F981-4BFE-94F5-AE64715B08A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3F049931-F981-4BFE-94F5-AE64715B08A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3F049931-F981-4BFE-94F5-AE64715B08A4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -2,7 +2,7 @@
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 
-namespace Meniga.MassTransit.Common.Bus
+namespace Meniga.MassTransit.Infrastructure.Consumer
 {
     public abstract class ConsumerConfig
     {
@@ -12,9 +12,7 @@ namespace Meniga.MassTransit.Common.Bus
     public class ConsumerConfig<TMessage, TConsumer> : ConsumerConfig where TMessage : class where TConsumer : IConsumer<TMessage>
     {
         public string ConsumerGroup;
-
         public Type ConsumerType => typeof(TConsumer);
-
         public Action<IConsumerConfigurator<TMessage>> Config;
     }
 }

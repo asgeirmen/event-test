@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 using MassTransit;
 using Meniga.MassTransit.Common.Bus;
 
-namespace Meniga.MassTransit.Infrastructure.Producer
+namespace Meniga.MassTransit.Infrastructure.RabbitMq
 {
-    public class MassTransitPublisher<T> : IBusPublisher<T>
+    public class RabbitMqPublisher<T> : IBusPublisher<T>
     {
         private readonly IPublishEndpoint _publishEndpoint;
 
-        public MassTransitPublisher(IPublishEndpoint publishEndpoint)
+        public RabbitMqPublisher(IPublishEndpoint publishEndpoint)
         {
             _publishEndpoint = publishEndpoint;
         }

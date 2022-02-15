@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Meniga.MassTransit.Common;
+using MassTransit;
 using Meniga.MassTransit.Common.Bus;
 using Meniga.MassTransit.Common.Configuration;
+using Meniga.MassTransit.Infrastructure.Consumer;
+using Meniga.MassTransit.Infrastructure.Kafka;
+using Meniga.MassTransit.Infrastructure.Producer;
 using Meniga.MassTransit.RabbitMq;
 using Meniga.MassTransit.Runner.Consumers;
 using Microsoft.Extensions.Configuration;
@@ -16,11 +19,17 @@ namespace Meniga.MassTransit.Runner
     {
         static async Task<int> Main(string[] args)
         {
-            await CreateHostBuilder(args)
-                 .Build()
-                 .RunAsync();
+            var host = CreateHostBuilder(args)
+                 .Build();
 
-            return 0;
+            var busControl = host.Services.GetService<IBusControl>();
+            if (busControl != null)
+            {
+                await busControl.StartAsync();
+            }
+            await host.RunAsync();
+
+                return 0;
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -37,6 +46,7 @@ namespace Meniga.MassTransit.Runner
                     .Get<MassTransitConfiguration>();
 
                 RegisterBusConsumers(services, massTransitConfiguration.Consumers);
+                RegisterKafkaBusProducer(services, massTransitConfiguration.KafkaConfiguration.Producers);
 
                 services.ConfigureMassTransit(massTransitConfiguration);
                 services.AddHostedService<Worker>();
@@ -56,6 +66,22 @@ namespace Meniga.MassTransit.Runner
             });
 
             services.AddSingleton<IConsumersRegistry>(consumersRegistry);
+        }
+
+        private static void RegisterKafkaBusProducer(IServiceCollection services, IDictionary<string, string> producers)
+        {
+            var producersRegistry = new ProducersRegistry();
+            producersRegistry.Register(new ProducerConfig<EventOne, KafkaPublisher<EventOne>>()
+            {
+                Topic = producers[$"{nameof(KafkaPublisher<EventOne>)};{nameof(EventOne)}"]
+            });
+
+            producersRegistry.Register(new ProducerConfig<EventTwo, KafkaPublisher<EventTwo>>()
+            {
+                Topic = producers[$"{nameof(KafkaPublisher<EventTwo>)};{nameof(EventTwo)}"]
+            });
+
+            services.AddSingleton<IProducersRegistry>(producersRegistry);
         }
     }
 }

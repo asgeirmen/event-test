@@ -2,6 +2,7 @@
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
+using Meniga.MassTransit.Common.Bus;
 using Microsoft.Extensions.Logging;
 
 namespace Meniga.MassTransit.Runner.Consumers
@@ -9,15 +10,18 @@ namespace Meniga.MassTransit.Runner.Consumers
     public class EventOneConsumer : IConsumer<EventOne>
     {
         private readonly ILogger<EventOneConsumer> _logger;
-        public EventOneConsumer(ILogger<EventOneConsumer> logger)
+        private readonly IBusPublisher<EventTwo> _busPublisher;
+        public EventOneConsumer(ILogger<EventOneConsumer> logger, 
+            IBusPublisher<EventTwo> busPublisher)
         {
             _logger = logger;
+            _busPublisher = busPublisher;
         }
 
         public async Task Consume(ConsumeContext<EventOne> context)
         {
             _logger.LogDebug(context.Message.Text);
-            await context.Publish(new EventTwo { Text = context.Message.Text }, context.CancellationToken);
+            await _busPublisher.PublishAsync(new EventTwo { Text = context.Message.Text }, context.CancellationToken);
         }
     }
 
