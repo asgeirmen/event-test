@@ -16,7 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Meniga.MassTransit.Common\Meniga.MassTransit.Common.csproj" />
     <ProjectReference Include="..\Meniga.MassTransit.Kafka\Meniga.MassTransit.Kafka.csproj" />
-    <ProjectReference Include="..\Meniga.MassTransit.RabbitMq\Meniga.MassTransit.RabbitMq.csproj" />
+    <ProjectReference Include="..\Meniga.MassTransit.RabbitMq\Meniga.MassTransit.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

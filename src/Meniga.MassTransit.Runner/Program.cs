@@ -1,6 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Meniga.MassTransit.Common;
+using Meniga.MassTransit.Common.Bus;
 using Meniga.MassTransit.Common.Configuration;
 using Meniga.MassTransit.RabbitMq;
+using Meniga.MassTransit.Runner.Consumers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,13 +31,32 @@ namespace Meniga.MassTransit.Runner
                 builder.AddJsonFile("massTransit.json");
             })
             .ConfigureServices((hostContext, services) =>
-            { 
-                services.AddOptions<MassTransitConfiguration>()
-                        .BindConfiguration(nameof(MassTransitConfiguration));
+            {
+                var massTransitConfiguration = hostContext.Configuration
+                    .GetSection(nameof(MassTransitConfiguration))
+                    .Get<MassTransitConfiguration>();
 
-                services.ConfigureMassTransitRabbitMqBus(hostContext.Configuration.GetSection(nameof(MassTransitConfiguration)).Get<MassTransitConfiguration>().RabbitMqConfiguration);
-                //services.ConfigureMassTransitKafkaRider(hostContext.Configuration.Get<MassTransitConfiguration>().KafkaConfiguration);
+                RegisterBusConsumers(services, massTransitConfiguration.Consumers);
+
+                services.ConfigureMassTransit(massTransitConfiguration);
+                services.AddHostedService<Worker>();
             })
             .UseSerilog((hostingContext, loggerConfiguration) => loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration));
+
+        private static void RegisterBusConsumers(IServiceCollection services, IDictionary<string, string> consumers)
+        {
+            var consumersRegistry = new ConsumersRegistry();
+            consumersRegistry.Register(new ConsumerConfig<EventOne, EventOneConsumer>() 
+            { 
+                ConsumerGroup = consumers[nameof(EventOneConsumer)] 
+            });
+            consumersRegistry.Register(new ConsumerConfig<EventTwo, EventTwoConsumer>() 
+            { 
+                ConsumerGroup = consumers[nameof(EventTwoConsumer)]
+            });
+
+            services.AddSingleton<IConsumersRegistry>(consumersRegistry);
+        }
     }
 }
+ 

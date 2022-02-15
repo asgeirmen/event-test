@@ -9,39 +9,31 @@
       "Using": []
     },
     "WriteTo": [
-      {}
+      { "Name": "Console" }
     ]
   },
   "MassTransitConfiguration": {
-    //"KafkaConfiguration": {
-    //  "Host": {
-    //    "bootstrap.servers": "localhost:9092"
-    //  },
-    //  "Producers": [
-    //    {
-    //      "TransactionTimeout": 30000,
-    //      "Name": "unicredit.ods.meniga_to_kafka.transactions.Transaction",
-    //      "Topic": "test-topic"
-    //    }
-    //  ]
-    //},
-    "RabbitMqConfiguration": {
+    "KafkaConfiguration": {
       "Host": {
-        "HostName": "localhost",
-        "VirtualHost": "/",
-        "UserName": "guest",
-        "Password": "guest"
+        "bootstrap.servers": "localhost:9092"
       },
-      "Consumers": [
+      "Producers": [
         {
-          "Type": "Meniga.MassTransit.Runner.Consumers.EventConsumer",
-          "Definition": "Meniga.MassTransit.Runner.Consumers.EventConsumerDefinition"
-        },
-        {
-          "Type": "Meniga.MassTransit.Runner.Consumers.EventTwoConsumer",
-          "Definition": "Meniga.MassTransit.Runner.Consumers.EventTwoConsumerDefinition"
+          "TransactionTimeout": 30000,
+          "Name": "unicredit.ods.meniga_to_kafka.transactions.Transaction",
+          "Topic": "test-topic"
         }
       ]
-    }
+    },
+    //"RabbitMqConfiguration": {
+    //  "HostName": "localhost",
+    //  "VirtualHost": "/",
+    //  "UserName": "guest",
+    //  "Password": "guest"
+    //},
+    //"Consumers": {
+    //  "EventOneConsumer": "eventOneConsumerGroup",
+    //  "EventTwoConsumer": "eventTwoConsumerGroup"
+    //}
   }
 }

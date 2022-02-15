@@ -16,3 +16,10 @@ services:
       KAFKA_LOG_DIRS: /kafka/logs
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  rabbitmq:
+    image: rabbitmq:3.8.14-management
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672

@@ -2,31 +2,27 @@
 using MassTransit;
 using MassTransit.ConsumeConfigurators;
 using MassTransit.Definition;
-using Meniga.MassTransit.Runner.RabbitMq.Producers;
 using Microsoft.Extensions.Logging;
 
 namespace Meniga.MassTransit.Runner.Consumers
 {
-    public class EventConsumer : IConsumer<IEvent>
+    public class EventOneConsumer : IConsumer<EventOne>
     {
-        private readonly ILogger<EventConsumer> _logger;
-        private readonly RabbitEventTwoProducer<EventTwo> _producer;
-        public EventConsumer(ILogger<EventConsumer> logger, RabbitEventTwoProducer<EventTwo> producer)
+        private readonly ILogger<EventOneConsumer> _logger;
+        public EventOneConsumer(ILogger<EventOneConsumer> logger)
         {
             _logger = logger;
-            _producer = producer;
         }
 
-        public async Task Consume(ConsumeContext<IEvent> context)
+        public async Task Consume(ConsumeContext<EventOne> context)
         {
             _logger.LogDebug(context.Message.Text);
-
-            await _producer.PublishAsync(new EventTwo { Text = context.Message.Text }, context.CancellationToken);
+            await context.Publish(new EventTwo { Text = context.Message.Text }, context.CancellationToken);
         }
     }
 
     public class EventConsumerDefinition :
-        ConsumerDefinition<EventConsumer>
+        ConsumerDefinition<EventOneConsumer>
     {
         public EventConsumerDefinition()
         {
@@ -34,7 +30,7 @@ namespace Meniga.MassTransit.Runner.Consumers
         }
 
         protected override void ConfigureConsumer(IReceiveEndpointConfigurator endpointConfigurator, 
-            IConsumerConfigurator<EventConsumer> consumerConfigurator)
+            IConsumerConfigurator<EventOneConsumer> consumerConfigurator)
         {
             base.ConfigureConsumer(endpointConfigurator, consumerConfigurator);
         }

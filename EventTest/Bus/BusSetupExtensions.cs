@@ -183,7 +183,6 @@ namespace EventTest.Bus
                         }
                     }
                 });
-
             }
             else
             {

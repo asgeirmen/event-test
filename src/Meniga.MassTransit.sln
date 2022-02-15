@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Common",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Kafka", "Meniga.MassTransit.Kafka\Meniga.MassTransit.Kafka.csproj", "{3F049931-F981-4BFE-94F5-AE64715B08A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.RabbitMq", "Meniga.MassTransit.RabbitMq\Meniga.MassTransit.RabbitMq.csproj", "{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Meniga.MassTransit.Infrastructure", "Meniga.MassTransit.RabbitMq\Meniga.MassTransit.Infrastructure.csproj", "{4C0EEE07-77E0-47DA-85E1-C55208DE95F9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

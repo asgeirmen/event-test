@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Meniga.MassTransit.Common.Configuration.RabbitMq
+﻿namespace Meniga.MassTransit.Common.Configuration.RabbitMq
 {
     public class RabbitMqConfiguration
     {
-        public HostSettings Host { get; set; }
-        public IEnumerable<RabbitMqConsumer> Consumers { get; set; }
+        public string HostName { get; set; }
+        public string VirtualHost { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 }
