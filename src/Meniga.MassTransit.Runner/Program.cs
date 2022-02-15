@@ -46,7 +46,11 @@ namespace Meniga.MassTransit.Runner
                     .Get<MassTransitConfiguration>();
 
                 RegisterBusConsumers(services, massTransitConfiguration.Consumers);
-                RegisterKafkaBusProducer(services, massTransitConfiguration.KafkaConfiguration.Producers);
+
+                if (massTransitConfiguration.KafkaConfiguration != null)
+                {
+                    RegisterKafkaBusProducer(services, massTransitConfiguration.KafkaConfiguration.Producers);
+                }
 
                 services.ConfigureMassTransit(massTransitConfiguration);
                 services.AddHostedService<Worker>();
