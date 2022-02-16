@@ -2,7 +2,7 @@
 
 namespace Meniga.MassTransit.Infrastructure.Consumer
 {
-    public class ConsumersRegistry : IConsumersRegistry
+    public class ConsumersRegistry<T> : IConsumersRegistry<T>
     {
         public ConsumersRegistry()
         {
@@ -17,7 +17,7 @@ namespace Meniga.MassTransit.Infrastructure.Consumer
         }
     }
 
-    public interface IConsumersRegistry
+    public interface IConsumersRegistry<T>
     {
         IList<ConsumerConfig> RegisteredConsumeres { get; }
         void Register(ConsumerConfig consumerConfig);

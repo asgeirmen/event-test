@@ -8,11 +8,13 @@ using MassTransit.RabbitMqTransport;
 using Meniga.MassTransit.Common.Configuration.RabbitMq;
 using Meniga.MassTransit.Infrastructure.Consumer;
 
-namespace Meniga.MassTransit.Infrastructure.RabbitMq
+namespace Meniga.MassTransit.Infrastructure.Transport.RabbitMq
 {
     public static class RabbitMqBusConfigurationExtensions
     {
-        public static void ConfigureMassTransitRabbitMqBus(this IServiceCollectionBusConfigurator configurator, RabbitMqConfiguration rabbitMqConfiguration, IConsumersRegistry consumersRegistry)
+        public static void ConfigureMassTransitRabbitMqBus(this IServiceCollectionBusConfigurator configurator, 
+            RabbitMqConfiguration rabbitMqConfiguration, 
+            IConsumersRegistry<RabbitMqConfiguration> consumersRegistry)
         {
             configurator.AddRabbitMqConsumers(consumersRegistry.RegisteredConsumeres);
 

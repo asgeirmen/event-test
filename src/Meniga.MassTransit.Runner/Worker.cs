@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Meniga.MassTransit.Common.Bus;
 using Microsoft.Extensions.Hosting;
@@ -7,15 +8,19 @@ namespace Meniga.MassTransit.Runner
 {
     public class Worker : BackgroundService
     {
-        private readonly IBusPublisher<EventOne> _producer;
-        public Worker(IBusPublisher<EventOne> producer)
+        private readonly IEnumerable<IBusPublisher<EventOne>> _producers;
+
+        public Worker(IEnumerable<IBusPublisher<EventOne>> producers)
         {
-            _producer = producer;
+            _producers = producers;
         }
 
-        protected async override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _producer.PublishAsync(new EventOne { Text = "Demo" }, stoppingToken);
+            foreach (var producer in _producers)
+            {
+                await producer.PublishAsync(new EventOne { Text = "Demo" }, stoppingToken);
+            }
         }
     }
 }

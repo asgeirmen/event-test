@@ -6,5 +6,6 @@ namespace Meniga.MassTransit.Common.Configuration.Kafka
     {
         public IEnumerable<string> Brokers { get; set; }
         public IDictionary<string,string> Producers { get; set; }
+        public IDictionary<string,string> Consumers { get; set; }
     }
 }

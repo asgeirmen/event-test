@@ -7,9 +7,9 @@ namespace Meniga.MassTransit.Infrastructure.Producer
     {
     }
 
-    public class ProducerConfig<TMessage, TProducer> : ProducerConfig where TMessage : class where TProducer : IBusPublisher<TMessage>
+    public class ProducerConfig<TMessage> : ProducerConfig where TMessage : class
     {
-        public string Topic;
+        public string ConsumerGroup;
         public Type MessageType => typeof(TMessage);
     }
 }

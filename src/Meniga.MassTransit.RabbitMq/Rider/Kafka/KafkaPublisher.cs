@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MassTransit.KafkaIntegration;
 using Meniga.MassTransit.Common.Bus;
 
-namespace Meniga.MassTransit.Infrastructure.Kafka
+namespace Meniga.MassTransit.Infrastructure.Rider.Kafka
 {
     public class KafkaPublisher<T> : IBusPublisher<T> where T : class
     {

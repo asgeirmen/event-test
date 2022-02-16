@@ -18,19 +18,23 @@
         "localhost:9092"
       ],
       "Producers": {
-        "KafkaPublisher;EventOne": "eventOneConsumerGroup",
-        "KafkaPublisher;EventTwo": "eventTwoConsumerGroup"
+        "EventOne": "eventOneConsumerGroup",
+        "EventTwo": "eventTwoConsumerGroup"
+      },
+      "Consumers": {
+        "EventOneConsumer": "eventOneConsumerGroup",
+        "EventTwoConsumer": "eventTwoConsumerGroup"
       }
     },
-    //"RabbitMqConfiguration": {
-    //  "HostName": "localhost",
-    //  "VirtualHost": "/",
-    //  "UserName": "guest",
-    //  "Password": "guest"
-    //},
-    "Consumers": {
-      "EventOneConsumer": "eventOneConsumerGroup",
-      "EventTwoConsumer": "eventTwoConsumerGroup"
+    "RabbitMqConfiguration": {
+      "HostName": "localhost",
+      "VirtualHost": "/",
+      "UserName": "guest",
+      "Password": "guest",
+      "Consumers": {
+        "EventOneConsumer": "eventOneConsumerGroup",
+        "EventTwoConsumer": "eventTwoConsumerGroup"
+      }
     }
   }
 }

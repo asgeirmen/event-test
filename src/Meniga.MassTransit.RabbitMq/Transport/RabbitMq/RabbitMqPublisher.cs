@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MassTransit;
 using Meniga.MassTransit.Common.Bus;
 
-namespace Meniga.MassTransit.Infrastructure.RabbitMq
+namespace Meniga.MassTransit.Infrastructure.Transport.RabbitMq
 {
     public class RabbitMqPublisher<T> : IBusPublisher<T>
     {

@@ -9,17 +9,16 @@ using MassTransit.Registration;
 using Meniga.MassTransit.Common.Bus;
 using Meniga.MassTransit.Common.Configuration.Kafka;
 using Meniga.MassTransit.Infrastructure.Consumer;
-using Meniga.MassTransit.Infrastructure.Kafka;
 using Meniga.MassTransit.Infrastructure.Producer;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Meniga.MassTransit.RabbitMq
+namespace Meniga.MassTransit.Infrastructure.Rider.Kafka
 {
     public static class KafkaBusConfigurationExtensions
     {
         public static void ConfigureMassTransitKafkaRider(this IServiceCollectionBusConfigurator configurator,
-            KafkaConfiguration kafkaConfiguration, 
-            IConsumersRegistry consumersRegistry,
+            KafkaConfiguration kafkaConfiguration,
+            IConsumersRegistry<KafkaConfiguration> consumersRegistry,
             IProducersRegistry producersRegistry)
         {
             configurator.AddRider(rider =>
@@ -62,7 +61,7 @@ namespace Meniga.MassTransit.RabbitMq
 
         private static void RegisterTopicEndpoints(this IKafkaFactoryConfigurator config, IRiderRegistrationContext context, IList<ConsumerConfig> consumers)
         {
-            foreach(var consumer in consumers)
+            foreach (var consumer in consumers)
             {
                 var consumerType = (Type)((dynamic)consumer).ConsumerType;
                 var eventType = consumerType.GetInterfaces()
@@ -74,25 +73,25 @@ namespace Meniga.MassTransit.RabbitMq
                     .FirstOrDefault(m => m.Name == "TopicEndpoint" && m.IsGenericMethod);
                 MethodInfo generic = method.MakeGenericMethod(eventType);
 
-                Action<IKafkaTopicReceiveEndpointConfigurator> action = e =>
+                void Action(IKafkaTopicReceiveEndpointConfigurator e)
                 {
                     e.EnableAutoOffsetStore = true;
                     e.ConfigureConsumer(context, consumerType);
-                };
+                }
 
                 generic.Invoke(null,
-                    new object[] { config, eventType.FullName, ((dynamic)consumer).ConsumerGroup, action });
+                    new object[] { config, eventType.FullName, ((dynamic)consumer).ConsumerGroup, (Action<IKafkaTopicReceiveEndpointConfigurator>) Action });
             }
         }
 
         public static void RegisterKafkaProducers(this IServiceCollection services, IList<ProducerConfig> producers)
         {
-            foreach(var producer in producers)
+            foreach (var producer in producers)
             {
                 var messageType = (Type)((dynamic)producer).MessageType;
                 var publisherInterface = typeof(IBusPublisher<>).MakeGenericType(messageType);
                 var publisherImpl = typeof(KafkaPublisher<>).MakeGenericType(messageType);
-                services.AddTransient(publisherInterface, publisherImpl);
+                services.AddSingleton(publisherInterface, publisherImpl);
             }
         }
     }
